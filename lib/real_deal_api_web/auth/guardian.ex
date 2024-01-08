@@ -40,9 +40,7 @@ defmodule RealDealApiWeb.Auth.Guardian do
   end
 
   defp create_token(account) do
-    IO.puts("before encode_and_sign")
     {:ok, token, _claims} = encode_and_sign(account)
-    IO.puts("after encode_and_sign")
     {:ok, account, token}
   end
 end
