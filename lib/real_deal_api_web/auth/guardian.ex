@@ -7,13 +7,13 @@ defmodule RealDealApiWeb.Auth.Guardian do
     {:ok, sub}
   end
 
-  def subject_for_token(_, _claims) do
+  def subject_for_token(_, _) do
     {:error, :no_id_provided}
   end
 
   def resource_from_claims(%{"sub" => id}) do
     case Accounts.get_account!(id) do
-      nil -> {:error, :no_found}
+      nil -> {:error, :not_found}
       resource -> {:ok, resource}
     end
   end
@@ -22,4 +22,27 @@ defmodule RealDealApiWeb.Auth.Guardian do
     {:error, :no_id_provided}
   end
 
+  def authenticate(email, password) do
+    case Accounts.get_account_by_email(email) do
+      nil ->
+        {:error, :unauthored}
+
+      account ->
+        case validate_password(password, account.hash_password) do
+          true -> create_token(account)
+          false -> {:error, :unauthorized}
+        end
+    end
+  end
+
+  defp validate_password(password, hash_password) do
+    Bcrypt.verify_pass(password, hash_password)
+  end
+
+  defp create_token(account) do
+    IO.puts("before encode_and_sign")
+    {:ok, token, _claims} = encode_and_sign(account)
+    IO.puts("after encode_and_sign")
+    {:ok, account, token}
+  end
 end
