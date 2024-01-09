@@ -1,0 +1,38 @@
+@startuml "real_deal_api"
+!theme carbon-gray
+skinparam componentStyle uml2
+'top to bottom direction
+left to right direction
+
+package "lib" {
+  package "real_deal_api" {
+    [real_deal_api.ex]
+    package "accounts" {
+      [account.ex]
+    }
+    [accounts.ex]
+    package "users" {
+      [user.ex]
+    }
+    [users.ex]
+  }
+  package "real_deal_api_web" {
+    package "auth" {
+      [authorized_plug.ex]
+      [error_response.ex]
+      [guardian.ex]
+      [guardian_error_handler.ex]
+      [pipeline.ex]
+      [set_account.ex]
+    }
+    package "controllers" {
+      [account_controller.ex]
+      [user_controller.ex]
+    }
+    package "views" {
+      [account_view.ex]
+      [user_view.ex]
+    }
+  }
+}
+@enduml

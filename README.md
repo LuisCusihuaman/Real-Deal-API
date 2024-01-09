@@ -1,5 +1,7 @@
 # RealDealApi
 
+![packages](real_deal_api.png)
+
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`
