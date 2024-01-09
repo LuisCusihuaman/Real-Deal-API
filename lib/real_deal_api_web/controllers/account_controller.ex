@@ -71,9 +71,10 @@ defmodule RealDealApiWeb.AccountController do
     |> render("account_token.json", %{account: account, token: nil})
   end
 
+  @spec show(Plug.Conn.t(), map()) :: Plug.Conn.t()
   def show(conn, %{"id" => id}) do
-    account = Accounts.get_account!(id)
-    render(conn, "show.json", account: account)
+    account = Accounts.get_full_account(id)
+    render(conn, "full_account.json", account: account)
   end
 
   def update(conn, %{"account" => account_params}) do
