@@ -67,11 +67,14 @@ defmodule RealDealApiWeb.AccountController do
     render(conn, "full_account.json", account: account)
   end
 
-  def update(conn, %{"account" => account_params}) do
-    account = Accounts.get_account!(account_params["id"])
+  def update(conn, %{"current_hash" => current_hash, "account" => account_params}) do
+    case Guardian.validate_password(current_hash, conn.assigns.account.hash_password) do
+      true ->
+        {:ok, account} = Accounts.update_account(conn.assigns.account, account_params)
+        render(conn, "show.json", account: account)
 
-    with {:ok, %Account{} = account} <- Accounts.update_account(account, account_params) do
-      render(conn, "show.json", account: account)
+      false ->
+        raise ErrorResponse.Unauthorized, message: "Password incorrect."
     end
   end
 
